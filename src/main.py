@@ -2,12 +2,12 @@ import time
 from datetime import datetime
 import pytz
 import threading
-#from tkinter import *
+from tkinter import *
 from tkinter import ttk
 import tkinter as tk
 
 
-
+global root
 def countdown_timer(t, enable_night):
     global time_left, timer_running
 
@@ -86,14 +86,13 @@ def clock():
         time.sleep(1)
 
 def UI():
-
-    root = Tk()
+    global root, countdown_label
+    root = tk.Tk()
     frm = ttk.Frame(root, padding=500)
     frm.grid()
     ttk.Label(frm, text="Time Remaining").grid(column=0, row=1)
     ttk.Button(frm, text="Decrement time by 5", command=root.destroy).grid(column=1, row=10)
     ttk.Button(frm, text="Increment time by 5", command=root.destroy).grid(column=1, row=0)
-    #ttk.Label(frm, text=countdown_timer(t, enable_night=False).grid(column=0, row=0))
     ttk.Button(frm, text="Stop Timer", command=root.destroy).grid(column=2, row=1)
     ttk.Button(frm, text="\u2699", command=root.destroy).grid(column=3, row=0)
     root.mainloop()
@@ -101,16 +100,17 @@ def UI():
 
 # Main execution block
 def main():
+
     present_object = True
     trigger_sound = False
     enable_night = False
-    countdown_label = tk.Label(root, text="Time Remaining: 00:00:00", font=("Arial", 14))
+    countdown_label = ttk.Label(root, text="Time Remaining: 00:00:00", font=("Arial", 14))
     UI()
-    # if present_object:
-    #     study_time = time_set()  # Get the user input for the timer
-    #     countdown_timer_thread = threading.Thread(target=countdown_timer, args=(study_time, enable_night), daemon=True)
-    #     countdown_timer_thread.start()
-    #     countdown_timer_thread.join()
+    if present_object:
+        study_time = time_set()  # Get the user input for the timer
+        countdown_timer_thread = threading.Thread(target=countdown_timer, args=(study_time, enable_night), daemon=True)
+        countdown_timer_thread.start()
+        countdown_timer_thread.join()
     bright = 2
     night_mode()
     brightness(bright)
