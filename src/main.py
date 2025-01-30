@@ -8,28 +8,39 @@ import tkinter as tk
 
 
 global root
-def countdown_timer(t, enable_night):
-    global time_left, timer_running
-
+def countdown_timer():
+    global time_left, timer_running, enable_night
     while time_left > 0 and timer_running:
         hours, remainder = divmod(time_left, 3600)
         mins, secs = divmod(remainder, 60)
         timer_display = f"{hours:02d}:{mins:02d}:{secs:02d}"
-        countdown_label.configure(text=f"Time Remaining: {timer_display}")
+        countdown_label.config(text=f"{timer_display}")
         root.update_idletasks()
         time.sleep(1)
         time_left -= 1
 
     if time_left == 0 and timer_running:
-        countdown_label.configure(text="Study time complete!")
+        countdown_label.configure(text="Time is Up")
 
     timer_running = False
+
+
+def update_timer_display():
+
+    hours, remainder = divmod(time_left, 3600)
+    mins, secs = divmod(remainder, 60)
+    countdown_label.config(text=f"{hours:02d}:{mins:02d}:{secs:02d}")
+
 
 def start_timer():
     global timer_running
     if not timer_running and time_left > 0:
         timer_running = True
         threading.Thread(target=countdown_timer, daemon=True).start()
+
+def stop_timer():
+    global timer_running
+    timer_running = False
 
 
 def increment_time():
@@ -44,23 +55,9 @@ def decrement_time():
     else:
         time_left = 0
     update_timer_display()
-def update_timer_display():
-    hours, remainder = divmod(time_left, 3600)
-    mins, secs = divmod(remainder, 60)
-    countdown_label.configure(text=f"Time Remaining: {hours:02d}:{mins:02d}:{secs:02d}")
 
 
-# Function to set the timer
-def time_set():
-    while True:
-        try:
-            user_set = int(input("Set study timer in sec: "))
-            if user_set > 0:
-                return user_set
-            else: #ensure positive ints only
-                print("Please enter a positive number.")
-        except ValueError: #deny non-numerical inputs
-            print("Invalid input. Please enter a valid number.")
+
 
 def brightness(bright):
         if bright == 1:
@@ -74,49 +71,50 @@ def brightness(bright):
 
 
 def night_mode():
+    global enable_night
     enable_night = True
     bright = 1
 
 def clock():
-    time.sleep(5)
-    while (1):
-        aware = datetime.now(pytz.utc)
+    global RTclk
+    if RTclk_label:
         pst = datetime.now(pytz.timezone('US/Pacific'))
-        print('r', 'Date, Time', f'\r{pst}', end='')
-        time.sleep(1)
+        RTclk_label.config(text=f"{pst.strftime('%Y-%m-%d %H:%M:%S %Z')}")
+    root.after(1000, clock)
 
 def UI():
-    global root, countdown_label
+    global root, countdown_label, RTclk_label
     root = tk.Tk()
     frm = ttk.Frame(root, padding=500)
     frm.grid()
+    countdown_label = ttk.Label(frm, text="00:00:00", font=("Times New Roman", 20))
+    countdown_label.grid(column=1, row=1, columnspan=1)
+    RTclk_label = ttk.Label(frm, text="Loading...", font=("Times New Roman", 10))
+    RTclk_label.grid(column=1, row=15, columnspan=1)
+    clock()
     ttk.Label(frm, text="Time Remaining").grid(column=0, row=1)
-    ttk.Button(frm, text="Decrement time by 5", command=root.destroy).grid(column=1, row=10)
-    ttk.Button(frm, text="Increment time by 5", command=root.destroy).grid(column=1, row=0)
-    ttk.Button(frm, text="Stop Timer", command=root.destroy).grid(column=2, row=1)
-    ttk.Button(frm, text="\u2699", command=root.destroy).grid(column=3, row=0)
+    ttk.Button(frm, text="Decrement time by 5", command=decrement_time).grid(column=1, row=2)
+    ttk.Button(frm, text="Increment time by 5", command=increment_time).grid(column=1, row=0)
+    ttk.Button(frm, text="Start Timer", command=start_timer).grid(column=3, row=1)
+    ttk.Button(frm, text="Stop Timer", command=stop_timer).grid(column=3, row=2)
+    ttk.Button(frm, text="\u2699", command=root.destroy).grid(column=5, row=0)
     root.mainloop()
 
 
 # Main execution block
 def main():
-
+    global time_left
+    time_left = 0
+    global timer_running
+    timer_running = False
     present_object = True
     trigger_sound = False
+    global enable_night
     enable_night = False
-    countdown_label = ttk.Label(root, text="Time Remaining: 00:00:00", font=("Arial", 14))
     UI()
-    if present_object:
-        study_time = time_set()  # Get the user input for the timer
-        countdown_timer_thread = threading.Thread(target=countdown_timer, args=(study_time, enable_night), daemon=True)
-        countdown_timer_thread.start()
-        countdown_timer_thread.join()
     bright = 2
     night_mode()
     brightness(bright)
-
-    clock_thread = threading.Thread(target=clock, daemon=True)
-    clock_thread.start()
 
 
 if __name__ == "__main__":
