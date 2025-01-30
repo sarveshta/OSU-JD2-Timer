@@ -6,6 +6,9 @@ from tkinter import *
 from tkinter import ttk
 import tkinter as tk
 
+#finish setting brightness buttons to control brightness vairable
+#set enable night mode button to control enable_night bool
+
 
 global root
 def countdown_timer():
@@ -75,12 +78,41 @@ def night_mode():
     enable_night = True
     bright = 1
 
+def enable_NM():
+    global enable_night
+    if enable_night == False:
+        enable_night = True
+    elif enable_night == True:
+        enable_night = False
+    else:
+        return 0;
+
 def clock():
     global RTclk
     if RTclk_label:
         pst = datetime.now(pytz.timezone('US/Pacific'))
         RTclk_label.config(text=f"{pst.strftime('%Y-%m-%d %H:%M:%S %Z')}")
     root.after(1000, clock)
+
+def BrightnessUI():
+    global root3
+    root3 = tk.Tk()
+    frm3 = ttk.Frame(root3, padding = 100)
+    frm3.grid()
+    ttk.Label(frm3, text="Set Brightness Level: ").grid(column=0, row=1)
+    ttk.Button(frm3, text="Dark", command=enable_NM).grid(column=0, row=2)
+    ttk.Button(frm3, text="Medium", command=enable_NM).grid(column=0, row=3)
+    ttk.Button(frm3, text="Bright", command=enable_NM).grid(column=0, row=4)
+def SettingsUI():
+    global root2
+    root2 = tk.Tk()
+    frm2 = ttk.Frame(root2, padding = 150)
+    frm2.grid()
+    ttk.Label(frm2, text="Night Mode: ").grid(column=0, row=1)
+    ttk.Button(frm2, text="ON/OFF", command=enable_NM).grid(column=1, row=1)
+    ttk.Label(frm2, text="Brightness: ").grid(column=0, row=2)
+    ttk.Button(frm2, text="Set", command=BrightnessUI).grid(column=1, row=2)
+
 
 def UI():
     global root, countdown_label, RTclk_label
@@ -97,11 +129,12 @@ def UI():
     ttk.Button(frm, text="Increment time by 5", command=increment_time).grid(column=1, row=0)
     ttk.Button(frm, text="Start Timer", command=start_timer).grid(column=3, row=1)
     ttk.Button(frm, text="Stop Timer", command=stop_timer).grid(column=3, row=2)
-    ttk.Button(frm, text="\u2699", command=root.destroy).grid(column=5, row=0)
+    ttk.Button(frm, text="\u2699", command=SettingsUI).grid(column=5, row=0)
     root.mainloop()
 
 
-# Main execution block
+
+# Main exe
 def main():
     global time_left
     time_left = 0
