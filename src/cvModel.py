@@ -10,7 +10,7 @@ bounding_box_annotator = sv.BoxAnnotator()
 label_annotator = sv.LabelAnnotator()
 
 # open the default camera (use the appropriate camera index if needed)
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 if not cap.isOpened():
     print("Error: Could not open camera.")
     exit()
