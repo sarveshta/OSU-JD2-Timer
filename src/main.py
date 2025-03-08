@@ -21,7 +21,7 @@ capture_filename = "resized_Phone.jpeg"
 photo_lock = threading.Lock()
 
 # Configure logging
-logging.basicConfig(filename='./main.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+logging.basicConfig(filename='/home/pi/projects/OSU-JD2-Timer/main.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
 def triggerBuzzer():
     logging.info("Trigger Buzzer function started")
