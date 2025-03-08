@@ -23,7 +23,7 @@ def process_image(capture_filename):
     # Build the curl command that uses base64 encoding on the image
     cmd = (
         f"base64 -i {capture_filename} | "
-        f"curl -s -d @- \"https://detect.roboflow.com/coco/34?api_key=h2EXOUFyekrJwf9BZKoC\""
+        f"curl -s -d @- \"https://detect.roboflow.com/mobile-phone-detection-mtsje/1?api_key=h2EXOUFyekrJwf9BZKoC\""
     )
     
     # Execute the command
