@@ -174,7 +174,7 @@ def UI():
     # creation of timer page, management of button spacing
     global root, countdown_label, RTclk_label, frm, timer_stopped, Timer_stop_count
     root = tk.Tk()
-    frm = ttk.Frame(root, padding=20)
+    frm = ttk.Frame(root, padding=100)
     frm.grid()
     countdown_label = tk.Label(frm, text="00:00:00", font=("Times New Roman", 100))  # initial clock labels
     countdown_label.grid(column=0, row=1, columnspan=3)
