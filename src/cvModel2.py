@@ -43,7 +43,7 @@ def process_image(capture_filename):
     phone_detected = False
     phone_confidence = 0.0
     for prediction in result.get("predictions", []):
-        if prediction.get("class") == "cell phone":
+        if prediction.get("class") == "mobilephone screen":
             phone_detected = True
             phone_confidence = max(phone_confidence, prediction.get("confidence", 0))
         if prediction.get("class") == "cell-phone":
