@@ -16,7 +16,7 @@ phoneDetected = False
 confidence = 0
 confidenceThreshold = 0.5
 
-capture_filename = "resized_Phone.jpeg"
+capture_filename = "captured_image.jpeg"
 
 photo_lock = threading.Lock()
 
