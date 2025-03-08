@@ -1,24 +1,11 @@
 import time
 import subprocess
 import json
-from PIL import Image
 import logging
 
 # Configure logging
 def process_image(capture_filename):
     logging.info("Processing image: %s", capture_filename)
-    # Open and possibly resize the image
-    img = Image.open(capture_filename)
-    width, height = img.size
-    max_dimension = max(width, height)
-
-    if max_dimension > 1080:
-        scale = 1080 / max_dimension
-        new_width = int(width * scale)
-        new_height = int(height * scale)
-        img = img.resize((new_width, new_height), resample=Image.LANCZOS)
-        img.save(capture_filename)
-        logging.info("Image resized to: %dx%d", new_width, new_height)
 
     # Build the curl command that uses base64 encoding on the image
     cmd = (
