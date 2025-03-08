@@ -1,5 +1,5 @@
 pytz
-opencv-python
 picamera
 Pillow
 RPi.GPIO
+picamzero
