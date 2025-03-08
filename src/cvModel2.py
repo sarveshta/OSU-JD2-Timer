@@ -5,8 +5,6 @@ from PIL import Image
 import logging
 
 # Configure logging
-logging.basicConfig(filename='/home/pi/projects/OSU-JD2-Timer/cvModel2.log', level=logging.INFO, format='%(asctime)s - %(message)s')
-
 def process_image(capture_filename):
     logging.info("Processing image: %s", capture_filename)
     # Open and possibly resize the image

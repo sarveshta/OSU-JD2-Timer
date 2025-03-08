@@ -28,15 +28,16 @@ logging.basicConfig(filename='/home/pi/projects/OSU-JD2-Timer/main.log', level=l
 
 def triggerBuzzer():
     logging.info("Buzzer trigger thread started")
+    
+    BuzzerPin = 19  # Use GPIO 19
+
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(BuzzerPin, GPIO.OUT)
+    GPIO.setwarnings(False)
+
+    global Buzz
+    
     while True:
-        BuzzerPin = 19  # Use GPIO 19
-
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(BuzzerPin, GPIO.OUT)
-        GPIO.setwarnings(False)
-
-        global Buzz
-
         while buzzerEnabled and not lcd.getNightMode():
             logging.info("Buzzer is enabled and night mode is off")
             Buzz = GPIO.PWM(BuzzerPin, 440)  # 440Hz sound
