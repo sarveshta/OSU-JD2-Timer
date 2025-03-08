@@ -15,7 +15,7 @@ phoneMissing = False
 brightNess = 10
 phoneDetected = False
 confidence = 0
-confidenceThreshold = 0.5
+confidenceThreshold = 0.2
 
 
 target_dir = "/home/pi/projects/OSU-JD2-Timer/src/captured_images"
@@ -36,14 +36,19 @@ def triggerBuzzer():
     GPIO.setwarnings(False)
 
     global Buzz
+    Buzz = GPIO.PWM(BuzzerPin, 440)
+    Buzz.start(0)
     
     while True:
         while buzzerEnabled and not lcd.getNightMode():
             logging.info("Buzzer is enabled and night mode is off")
-            Buzz = GPIO.PWM(BuzzerPin, 440)  # 440Hz sound
-            Buzz.start(50)  # 50% duty cycle
+        if buzzerEnabled and not lcd.getNightMode():
+            logging.info("Buzzer is enabled and night mode is off")
+            Buzz.ChangeDutyCycle(50)  
             non_blocking_sleep(2)
-            Buzz.stop()
+        else:
+            Buzz.ChangeDutyCycle(0)  
+    non_blocking_sleep(0.5)  
 
 def getPhoto():
     while True:
@@ -70,26 +75,31 @@ def process_image_thread(capture_filename):
 
 def updateOutput():
     logging.info("Update output thread started")
-    global nightModeEnabled, timerEnabled, buzzerEnabled, phoneMissing, brightNess, phoneDetected, confidence, capture_filename
+    global phoneMissing, phoneDetected, confidence, confidenceThreshold
+
     while True:
         non_blocking_sleep(5)
-        if(lcd.timer_running):
+
+        if lcd.timer_running:
             logging.info("Timer is running")
-            if (not phoneDetected) or (confidence < confidenceThreshold):
+            if not phoneDetected or confidence < confidenceThreshold:
                 phoneMissing = True
                 lcd.setTimerRunning(False)
-                logging.info("Phone not found; Phone Missing = True")
-                print("Phone not found; Phone Missing = True")
+                logging.info("Phone not found; Timer Stopped")
+                print("Phone not found; Timer Stopped")
+                
                 if not nightModeEnabled:
                     buzzerEnabled = True
-                    logging.info("Buzzer Enabled = True")
-                    print("Buzzer Enabled = True")
+                    logging.info("Buzzer Enabled")
+                    print("Buzzer Enabled")
             else:
-                phoneMissing = False
-                lcd.setTimerRunning(True)
-                buzzerEnabled = False
-                logging.info("Phone Found; phoneMissing = False buzzerEnabled = False")
-                print("Phone Found; phoneMissing = False buzzerEnabled = False") 
+                if phoneMissing: 
+                    logging.info("Phone detected again. Restarting timer.")
+                    phoneMissing = False
+                    lcd.start_timer() 
+                    buzzerEnabled = False
+                    logging.info("Buzzer Disabled")
+                    print("Buzzer Disabled")
 
 def main():
     logging.info("Main function started")
