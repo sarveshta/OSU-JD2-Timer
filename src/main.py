@@ -4,6 +4,7 @@ import threading
 import time
 import capturePhotos
 import RPi.GPIO as GPIO
+import os
 import logging
 
 # Global boolean variables
@@ -16,7 +17,9 @@ phoneDetected = False
 confidence = 0
 confidenceThreshold = 0.5
 
-capture_filename = "captured_image.jpeg"
+
+target_dir = "/home/pi/projects/OSU-JD2-Timer/src/captured_images"
+capture_filename = os.path.join(target_dir, "captured_image.jpeg")
 
 photo_lock = threading.Lock()
 
@@ -47,7 +50,7 @@ def getPhoto():
         global capture_filename
         with photo_lock:
             capturePhotos.capture_photo(capture_filename)
-        non_blocking_sleep(1)
+        non_blocking_sleep(4)
         logging.info("Photo captured and saved as %s", capture_filename)
 
 def non_blocking_sleep(seconds):

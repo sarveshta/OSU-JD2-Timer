@@ -2,7 +2,7 @@ import os
 import subprocess
 
 def capture_photo(capture_filename):
-    target_dir = "/home/pi/projects/OSU-JD2-Timer/captured_images"
+    target_dir = "/home/pi/projects/OSU-JD2-Timer/src/captured_images"
     
     # Ensure directory exists
     os.makedirs(target_dir, exist_ok=True)
@@ -24,7 +24,7 @@ def capture_photo(capture_filename):
         return None
 
 if __name__ == "__main__":
-    filename = capture_photo("captured_image.jpg")
+    filename = capture_photo("captured_image.jpeg")
     if filename:
         print("Photo successfully saved!")
     else:
