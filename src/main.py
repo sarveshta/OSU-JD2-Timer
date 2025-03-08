@@ -4,6 +4,7 @@ import threading
 import time
 import capturePhotos
 import RPi.GPIO as GPIO
+import logging
 
 # Global boolean variables
 nightModeEnabled = True 
@@ -18,6 +19,9 @@ confidenceThreshold = 0.5
 capture_filename = "resized_Phone.jpeg"
 
 photo_lock = threading.Lock()
+
+# Configure logging
+logging.basicConfig(filename='main.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
 def triggerBuzzer():
 
@@ -56,16 +60,19 @@ def updateOutput():
         non_blocking_sleep(5)
         if(lcd.timer_running):
             if (not phoneDetected) or (confidence < confidenceThreshold):
-                    phoneMissing = True
-                    lcd.setTimerRunning(False)
-                    print("Phone not found; Phone Missing = True")
-                    if not nightModeEnabled:
-                        buzzerEnabled = True
-                        print("Buzzer Enabled = True")
+                phoneMissing = True
+                lcd.setTimerRunning(False)
+                logging.info("Phone not found; Phone Missing = True")
+                print("Phone not found; Phone Missing = True")
+                if not nightModeEnabled:
+                    buzzerEnabled = True
+                    logging.info("Buzzer Enabled = True")
+                    print("Buzzer Enabled = True")
             else:
                 phoneMissing = False
                 lcd.setTimerRunning(True)
                 buzzerEnabled = False
+                logging.info("Phone Found; phoneMissing = False buzzerEnabled = False")
                 print("Phone Found; phoneMissing = False buzzerEnabled = False") 
 
 def main():
