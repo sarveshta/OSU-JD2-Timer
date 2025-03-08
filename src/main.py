@@ -24,29 +24,31 @@ photo_lock = threading.Lock()
 logging.basicConfig(filename='/home/pi/projects/OSU-JD2-Timer/main.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
 def triggerBuzzer():
-    logging.info("Trigger Buzzer function started")
+    logging.info("Buzzer trigger thread started")
     while True:
-        BuzzerPin = 26
+        BuzzerPin = 19  # Use GPIO 19
 
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(BuzzerPin, GPIO.OUT) 
+        GPIO.setup(BuzzerPin, GPIO.OUT)
         GPIO.setwarnings(False)
 
-        global Buzz 
+        global Buzz
 
-        # while buzzerEnabled and not lcd.getNightMode():
-        while True:
+        while buzzerEnabled and not lcd.getNightMode():
             logging.info("Buzzer is enabled and night mode is off")
-            Buzz = GPIO.PWM(BuzzerPin, 440) 
-            Buzz.start(50) 
+            Buzz = GPIO.PWM(BuzzerPin, 440)  # 440Hz sound
+            Buzz.start(50)  # 50% duty cycle
+            non_blocking_sleep(2)
+            Buzz.stop()
 
 def getPhoto():
-    logging.info("Capturing photo")
-    global capture_filename
-    with photo_lock:
-        capturePhotos.capture_photo(capture_filename)
-    non_blocking_sleep(1)
-    logging.info("Photo captured and saved as %s", capture_filename)
+    while True:
+        logging.info("Capturing photo")
+        global capture_filename
+        with photo_lock:
+            capturePhotos.capture_photo(capture_filename)
+        non_blocking_sleep(1)
+        logging.info("Photo captured and saved as %s", capture_filename)
 
 def non_blocking_sleep(seconds):
     logging.info("Sleeping for %d seconds", seconds)
