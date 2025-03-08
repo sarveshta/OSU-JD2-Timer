@@ -46,6 +46,9 @@ def process_image(capture_filename):
         if prediction.get("class") == "cell phone":
             phone_detected = True
             phone_confidence = max(phone_confidence, prediction.get("confidence", 0))
+        if prediction.get("class") == "laptop":
+            phone_detected = True
+            phone_confidence = max(phone_confidence, prediction.get("confidence", 0))
 
     logging.info("Phone detected: %s | Confidence: %.2f", phone_detected, phone_confidence)
     return phone_detected, phone_confidence
