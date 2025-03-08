@@ -21,10 +21,10 @@ capture_filename = "resized_Phone.jpeg"
 photo_lock = threading.Lock()
 
 # Configure logging
-logging.basicConfig(filename='main.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+logging.basicConfig(filename='./main.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
 def triggerBuzzer():
-
+    logging.info("Trigger Buzzer function started")
     BuzzerPin = 26
 
     GPIO.setmode(GPIO.BCM)
@@ -34,31 +34,40 @@ def triggerBuzzer():
     global Buzz 
 
     while buzzerEnabled and not lcd.getNightMode():
+        logging.info("Buzzer is enabled and night mode is off")
         Buzz = GPIO.PWM(BuzzerPin, 440) 
         Buzz.start(50) 
-
+    logging.info("Trigger Buzzer function ended")
 
 def getPhoto():
+    logging.info("Capturing photo")
     global capture_filename
     with photo_lock:
         capturePhotos.capture_photo(capture_filename)
     non_blocking_sleep(1)
+    logging.info("Photo captured and saved as %s", capture_filename)
 
 def non_blocking_sleep(seconds):
+    logging.info("Sleeping for %d seconds", seconds)
     event = threading.Event()
     event.wait(seconds)
 
 def process_image_thread(capture_filename):
+    logging.info("Image processing thread started")
     global phoneDetected, confidence
     while True:
         with photo_lock:
             phoneDetected, confidence = cvModel2.process_image(capture_filename)
+            logging.info("Image processed: phoneDetected=%s, confidence=%.2f", phoneDetected, confidence)
         non_blocking_sleep(5)
+
 def updateOutput():
+    logging.info("Update output thread started")
     global nightModeEnabled, timerEnabled, buzzerEnabled, phoneMissing, brightNess, phoneDetected, confidence, capture_filename
     while True:
         non_blocking_sleep(5)
         if(lcd.timer_running):
+            logging.info("Timer is running")
             if (not phoneDetected) or (confidence < confidenceThreshold):
                 phoneMissing = True
                 lcd.setTimerRunning(False)
@@ -76,23 +85,30 @@ def updateOutput():
                 print("Phone Found; phoneMissing = False buzzerEnabled = False") 
 
 def main():
+    logging.info("Main function started")
     cv_thread = threading.Thread(target=process_image_thread, args=(capture_filename,))
     cv_thread.daemon = True
     cv_thread.start()
+    logging.info("Started image processing thread")
 
     updateOutput_thread = threading.Thread(target=updateOutput)
     updateOutput_thread.daemon = True
     updateOutput_thread.start()
+    logging.info("Started update output thread")
 
     updatePhoto_thread = threading.Thread(target=getPhoto)
     updatePhoto_thread.daemon = True
     updatePhoto_thread.start()
+    logging.info("Started photo capture thread")
 
     triggerBuzzer_thread = threading.Thread(target=triggerBuzzer)
     triggerBuzzer_thread.daemon = True
     triggerBuzzer_thread.start()
+    logging.info("Started buzzer trigger thread")
 
     lcd.main()
+    logging.info("LCD main function started")
 
 if __name__ == "__main__":
     main()
+    logging.info("Program started")
