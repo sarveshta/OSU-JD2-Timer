@@ -2,8 +2,13 @@ import time
 import subprocess
 import json
 from PIL import Image
+import logging
+
+# Configure logging
+logging.basicConfig(filename='/home/pi/projects/OSU-JD2-Timer/cvModel2.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
 def process_image(capture_filename):
+    logging.info("Processing image: %s", capture_filename)
     # Open and possibly resize the image
     img = Image.open(capture_filename)
     width, height = img.size
@@ -15,9 +20,9 @@ def process_image(capture_filename):
         new_height = int(height * scale)
         img = img.resize((new_width, new_height), resample=Image.LANCZOS)
         img.save(capture_filename)
+        logging.info("Image resized to: %dx%d", new_width, new_height)
 
     # Build the curl command that uses base64 encoding on the image
-    # The command: base64 -i [capture_filename] | curl -d @- "https://detect.roboflow.com/coco/34?api_key=h2EXOUFyekrJwf9BZKoC"
     cmd = (
         f"base64 -i {capture_filename} | "
         f"curl -s -d @- \"https://detect.roboflow.com/coco/34?api_key=h2EXOUFyekrJwf9BZKoC\""
@@ -26,14 +31,14 @@ def process_image(capture_filename):
     # Execute the command
     proc = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     if proc.returncode != 0:
-        print("Error during curl call:", proc.stderr)
+        logging.error("Error during curl call: %s", proc.stderr)
         return False, 0.0
 
     # Load the output JSON response
     try:
         result = json.loads(proc.stdout)
     except json.JSONDecodeError:
-        print("Failed to decode JSON from response.")
+        logging.error("Failed to decode JSON from response.")
         return False, 0.0
 
     # Check predictions for a cell phone
@@ -44,10 +49,9 @@ def process_image(capture_filename):
             phone_detected = True
             phone_confidence = max(phone_confidence, prediction.get("confidence", 0))
 
-    print("Phone detected:", phone_detected, "| Confidence:", phone_confidence)
+    logging.info("Phone detected: %s | Confidence: %.2f", phone_detected, phone_confidence)
     return phone_detected, phone_confidence
 
 if __name__ == "__main__":
     phone_detected, confidence = process_image("captured_images/resized_Phone.jpeg")
-    print("Phone detected:", phone_detected, "| Confidence:", confidence)
-
+    logging.info("Phone detected: %s | Confidence: %.2f", phone_detected, confidence)
