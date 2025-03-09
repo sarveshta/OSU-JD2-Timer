@@ -16,7 +16,7 @@ brightNess = 10
 phoneDetected = True
 confidence = 0
 confidenceThreshold = 0.2
-alertFlag = False
+alertFlag = True
 
 
 target_dir = "/home/pi/projects/OSU-JD2-Timer/src/captured_images"
@@ -60,7 +60,7 @@ def triggerBuzzer():
                 pi.hardware_PWM(BuzzerPin, 0, 0)  # Ensure the buzzer is off
 
             if not buzzerEnabled:
-                alertFlag = False
+                alertFlag = True
             non_blocking_sleep(0.5)  
 
     except Exception as e:
