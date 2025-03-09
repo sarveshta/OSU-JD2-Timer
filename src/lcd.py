@@ -180,23 +180,54 @@ def UI():
     root = tk.Tk()
     root.geometry("480x320")  # Set window size to fit smaller displays
     frm = ttk.Frame(root, padding=10)  # Reduce padding
-    frm.grid()
+    frm.grid(sticky=(N, S, E, W))
+    
+    root.columnconfigure(0, weight=1)
+    root.rowconfigure(0, weight=1)
+    frm.columnconfigure(0, weight=1)
+    frm.columnconfigure(1, weight=1)
+    frm.columnconfigure(2, weight=1)
+    frm.columnconfigure(3, weight=1)
+    frm.columnconfigure(4, weight=1)
+    frm.columnconfigure(5, weight=1)
+    frm.rowconfigure(0, weight=1)
+    frm.rowconfigure(1, weight=1)
+    frm.rowconfigure(2, weight=1)
+    frm.rowconfigure(3, weight=1)
+    frm.rowconfigure(4, weight=1)
+    frm.rowconfigure(5, weight=1)
+    frm.rowconfigure(6, weight=1)
+    frm.rowconfigure(7, weight=1)
+    frm.rowconfigure(8, weight=1)
+    frm.rowconfigure(9, weight=1)
+    frm.rowconfigure(10, weight=1)
+    frm.rowconfigure(11, weight=1)
+    frm.rowconfigure(12, weight=1)
+    frm.rowconfigure(13, weight=1)
+    frm.rowconfigure(14, weight=1)
+    frm.rowconfigure(15, weight=1)
+    
     countdown_label = tk.Label(frm, text="00:00:00", font=("Times New Roman", 50))  # Reduce font size
-    countdown_label.grid(column=0, row=1, columnspan=3)
+    countdown_label.grid(column=0, row=0, columnspan=6, sticky=(N, S, E, W))
+    
     RTclk_label = tk.Label(frm, text="Loading...", font=("Times New Roman", 15))  # Reduce font size
-    RTclk_label.grid(column=1, row=15, columnspan=1)
+    RTclk_label.grid(column=0, row=1, columnspan=6, sticky=(N, S, E, W))
+    
     Timer_stop_count = tk.Label(frm, text="Timer Stops: " + str(timer_stopped))
-    Timer_stop_count.grid(column=4, row=4)
+    Timer_stop_count.grid(column=0, row=2, columnspan=6, sticky=(N, S, E, W))
+    
     clock()
-    tk.Button(frm, text="-", command=decrement_sec).grid(column=2, row=2)  # arrangement of buttons and names
-    tk.Button(frm, text="+", command=increment_sec).grid(column=2, row=0)
-    tk.Button(frm, text="-", command=decrement_min).grid(column=1, row=2)
-    tk.Button(frm, text="+", command=increment_min).grid(column=1, row=0)
-    tk.Button(frm, text="-", command=decrement_hr).grid(column=0, row=2)
-    tk.Button(frm, text="+", command=increment_hr).grid(column=0, row=0)
-    tk.Button(frm, text="Start Timer", command=start_timer).grid(column=4, row=2)
-    tk.Button(frm, text="Stop Timer", command=stop_timer).grid(column=4, row=3)
-    tk.Button(frm, text="\u2699", command=SettingsUI).grid(column=5, row=0)
+    
+    tk.Button(frm, text="-", command=decrement_sec, font=("Times New Roman", 20)).grid(column=2, row=3, sticky=(N, S, E, W))  # arrangement of buttons and names
+    tk.Button(frm, text="+", command=increment_sec, font=("Times New Roman", 20)).grid(column=2, row=4, sticky=(N, S, E, W))
+    tk.Button(frm, text="-", command=decrement_min, font=("Times New Roman", 20)).grid(column=1, row=3, sticky=(N, S, E, W))
+    tk.Button(frm, text="+", command=increment_min, font=("Times New Roman", 20)).grid(column=1, row=4, sticky=(N, S, E, W))
+    tk.Button(frm, text="-", command=decrement_hr, font=("Times New Roman", 20)).grid(column=0, row=3, sticky=(N, S, E, W))
+    tk.Button(frm, text="+", command=increment_hr, font=("Times New Roman", 20)).grid(column=0, row=4, sticky=(N, S, E, W))
+    tk.Button(frm, text="Start Timer", command=start_timer, font=("Times New Roman", 20)).grid(column=3, row=3, sticky=(N, S, E, W))
+    tk.Button(frm, text="Stop Timer", command=stop_timer, font=("Times New Roman", 20)).grid(column=3, row=4, sticky=(N, S, E, W))
+    tk.Button(frm, text="\u2699", command=SettingsUI, font=("Times New Roman", 20)).grid(column=5, row=3, rowspan=2, sticky=(N, S, E, W))
+    
     root.mainloop()  # loop window until power off
 
 
