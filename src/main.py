@@ -27,6 +27,7 @@ photo_lock = threading.Lock()
 logging.basicConfig(filename='/home/pi/projects/OSU-JD2-Timer/main.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
 def triggerBuzzer():
+    global buzzerEnabled, nightModeEnabled
     logging.info("Buzzer trigger thread started")
     
     BuzzerPin = 19  # Use GPIO 19
@@ -65,9 +66,9 @@ def triggerBuzzer():
         logging.info("Buzzer thread stopped")
 
 def getPhoto():
+    global capture_filename
     while True:
         logging.info("Capturing photo")
-        global capture_filename
         with photo_lock:
             capturePhotos.capture_photo(capture_filename)
         non_blocking_sleep(4)
@@ -79,8 +80,8 @@ def non_blocking_sleep(seconds):
     event.wait(seconds)
 
 def process_image_thread(capture_filename):
-    logging.info("Image processing thread started")
     global phoneDetected, confidence
+    logging.info("Image processing thread started")
     while True:
         with photo_lock:
             phoneDetected, confidence = cvModel2.process_image(capture_filename)
@@ -88,9 +89,8 @@ def process_image_thread(capture_filename):
         non_blocking_sleep(5)
 
 def updateOutput():
+    global phoneMissing, phoneDetected, confidence, confidenceThreshold, buzzerEnabled, nightModeEnabled
     logging.info("Update output thread started")
-    global phoneMissing, phoneDetected, confidence, confidenceThreshold
-
     while True:
         non_blocking_sleep(5)
 
@@ -117,6 +117,7 @@ def updateOutput():
                     print("Buzzer Disabled")
 
 def main():
+    global capture_filename
     logging.info("Main function started")
     cv_thread = threading.Thread(target=process_image_thread, args=(capture_filename,))
     cv_thread.daemon = True
