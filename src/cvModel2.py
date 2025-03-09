@@ -6,6 +6,7 @@ import logging
 # Configure logging
 def process_image(capture_filename):
     logging.info("Processing image: %s", capture_filename)
+    print(f"Processing image: {capture_filename}")
 
     # Build the curl command that uses base64 encoding on the image
     cmd = (
@@ -17,6 +18,7 @@ def process_image(capture_filename):
     proc = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     if proc.returncode != 0:
         logging.error("Error during curl call: %s", proc.stderr)
+        print(f"Error during curl call: {proc.stderr}")
         return False, 0.0
 
     # Load the output JSON response
@@ -24,6 +26,7 @@ def process_image(capture_filename):
         result = json.loads(proc.stdout)
     except json.JSONDecodeError:
         logging.error("Failed to decode JSON from response.")
+        print("Failed to decode JSON from response.")
         return False, 0.0
 
     # Check predictions for a cell phone
@@ -42,8 +45,10 @@ def process_image(capture_filename):
 
 
     logging.info("Phone detected: %s | Confidence: %.2f", phone_detected, phone_confidence)
+    print(f"Phone detected: {phone_detected} | Confidence: {phone_confidence:.2f}")
     return phone_detected, phone_confidence
 
 if __name__ == "__main__":
     phone_detected, confidence = process_image("captured_images/resized_Phone.jpeg")
     logging.info("Phone detected: %s | Confidence: %.2f", phone_detected, confidence)
+    print(f"Phone detected: {phone_detected} | Confidence: {confidence:.2f}")
