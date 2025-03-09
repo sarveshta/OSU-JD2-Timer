@@ -48,6 +48,10 @@ def increment_sec():
     time_left += 1  # add 1
     update_timer_display()
 
+def increaseTimeBy(time):
+    for i in range(time):
+        increment_sec()
+
 def increment_min():
     global time_left
     time_left += 60  # add 60

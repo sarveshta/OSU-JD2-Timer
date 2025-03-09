@@ -8,7 +8,7 @@ import os
 import logging
 
 # Global boolean variables
-nightModeEnabled = True 
+nightModeEnabled = False 
 timerEnabled = False
 buzzerEnabled = False
 phoneMissing = False
@@ -43,9 +43,13 @@ def triggerBuzzer():
         while buzzerEnabled and not lcd.getNightMode():
             logging.info("Buzzer is enabled and night mode is off")
         if buzzerEnabled and not lcd.getNightMode():
-            logging.info("Buzzer is enabled and night mode is off")
-            Buzz.ChangeDutyCycle(50)  
-            non_blocking_sleep(2)
+            for _ in range(3):
+                logging.info("Buzzer on for 1 second at 440 Hz")
+                Buzz.ChangeDutyCycle(50)
+                non_blocking_sleep(1)
+                logging.info("Buzzer off for 1 second")
+                Buzz.ChangeDutyCycle(0)
+                non_blocking_sleep(1)
         else:
             Buzz.ChangeDutyCycle(0)  
     non_blocking_sleep(0.5)  
@@ -85,6 +89,7 @@ def updateOutput():
             if not phoneDetected or confidence < confidenceThreshold:
                 phoneMissing = True
                 lcd.setTimerRunning(False)
+                lcd.increaseTimeBy(13) #Make up for time lost due to scheduling
                 logging.info("Phone not found; Timer Stopped")
                 print("Phone not found; Timer Stopped")
                 
