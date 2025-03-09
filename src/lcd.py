@@ -105,53 +105,84 @@ def increaseTimeBy(time_delta):
     update_timer_display()
 
 def dark_bright():
-    global bright
+    global bright, timer_frame
     bright = 1
     style = ttk.Style()
     style.configure("TFrame", background="gray26")
+
     # Update all buttons in the main frame
     for widget in frm.winfo_children():
         if isinstance(widget, tk.Button):
             widget.config(bg="gray18", fg="gray45")
+
     # Update timer digit labels and other labels
     hour_label.config(bg="gray26", fg="gray45")
     minute_label.config(bg="gray26", fg="gray45")
     second_label.config(bg="gray26", fg="gray45")
     RTclk_label.config(bg="gray26", fg="gray45")
     Timer_stop_count.config(bg="gray26", fg="gray45")
+
     if confidence_label:
         confidence_label.config(bg="gray26", fg="gray45")
 
+    # Update static colons and increment/decrement buttons
+    for widget in timer_frame.winfo_children():
+        if isinstance(widget, tk.Label):  # This includes colons
+            widget.config(bg="gray26", fg="gray45")
+        elif isinstance(widget, tk.Button):  # Includes + and - buttons
+            widget.config(bg="gray18", fg="gray45")
+
 def medium_bright():
-    global bright
+    global bright, timer_frame
     bright = 2
     style = ttk.Style()
     style.configure("TFrame", background="gray45")
+
     for widget in frm.winfo_children():
         if isinstance(widget, tk.Button):
             widget.config(bg="gray45", fg="gray80")
+
     hour_label.config(bg="gray45", fg="gray80")
     minute_label.config(bg="gray45", fg="gray80")
     second_label.config(bg="gray45", fg="gray80")
     RTclk_label.config(bg="gray45", fg="gray80")
     Timer_stop_count.config(bg="gray45", fg="gray80")
+
     if confidence_label:
         confidence_label.config(bg="gray45", fg="gray80")
 
+    # Update static colons and increment/decrement buttons
+    for widget in timer_frame.winfo_children():
+        if isinstance(widget, tk.Label):
+            widget.config(bg="gray45", fg="gray80")
+        elif isinstance(widget, tk.Button):
+            widget.config(bg="gray45", fg="gray80")
+
 def full_bright():
-    global bright
+    global bright, timer_frame
+    bright = 3
     style = ttk.Style()
     style.configure("TFrame", background="white")
+
     for widget in frm.winfo_children():
         if isinstance(widget, tk.Button):
             widget.config(bg="white", fg="black")
+
     hour_label.config(bg="white", fg="black")
     minute_label.config(bg="white", fg="black")
     second_label.config(bg="white", fg="black")
     RTclk_label.config(bg="white", fg="black")
     Timer_stop_count.config(bg="white", fg="black")
+
     if confidence_label:
         confidence_label.config(bg="white", fg="black")
+
+    # Update static colons and increment/decrement buttons
+    for widget in timer_frame.winfo_children():
+        if isinstance(widget, tk.Label):
+            widget.config(bg="white", fg="black")
+        elif isinstance(widget, tk.Button):
+            widget.config(bg="white", fg="black")
 
 def night_mode():
     global bright, trigger_sound
@@ -238,7 +269,7 @@ def SettingsUI():
         .grid(row=5, column=1, columnspan=2, sticky="nsew", padx=5, pady=(15,5))
 
 def UI():
-    global root, frm, RTclk_label, hour_label, minute_label, second_label, Timer_stop_count, confidence_label
+    global root, frm, RTclk_label, hour_label, minute_label, second_label, Timer_stop_count, confidence_label, timer_frame
     root = tk.Tk()
     root.geometry("480x320")
     root.title("Raspberry Pi Timer")
