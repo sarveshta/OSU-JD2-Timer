@@ -178,11 +178,12 @@ def UI():
     # creation of timer page, management of button spacing
     global root, countdown_label, RTclk_label, frm, timer_stopped, Timer_stop_count
     root = tk.Tk()
-    frm = ttk.Frame(root, padding=100)
+    root.geometry("480x320")  # Set window size to fit smaller displays
+    frm = ttk.Frame(root, padding=10)  # Reduce padding
     frm.grid()
-    countdown_label = tk.Label(frm, text="00:00:00", font=("Times New Roman", 100))  # initial clock labels
+    countdown_label = tk.Label(frm, text="00:00:00", font=("Times New Roman", 50))  # Reduce font size
     countdown_label.grid(column=0, row=1, columnspan=3)
-    RTclk_label = tk.Label(frm, text="Loading...", font=("Times New Roman", 25))
+    RTclk_label = tk.Label(frm, text="Loading...", font=("Times New Roman", 15))  # Reduce font size
     RTclk_label.grid(column=1, row=15, columnspan=1)
     Timer_stop_count = tk.Label(frm, text="Timer Stops: " + str(timer_stopped))
     Timer_stop_count.grid(column=4, row=4)
