@@ -58,10 +58,12 @@ def triggerBuzzer():
                     alertFlag = False
             else:
                 pi.hardware_PWM(BuzzerPin, 0, 0)  # Ensure the buzzer is off
-
+            if lcd.getNightMode:
+                alertFlag = False
             if not buzzerEnabled:
                 alertFlag = True
             non_blocking_sleep(0.5)  
+            print(confidenceThreshold)
 
     except Exception as e:
         logging.error(f"Error in buzzer thread: {e}")
@@ -107,13 +109,13 @@ def updateOutput():
     print("Update output thread started")
     while True:
         non_blocking_sleep(5)
-
+        confidenceThreshold = (lcd.getConfidenceThreshold() / 100)
         if lcd.timer_running:
             logging.info("Timer is running")
             print("Timer is running")
             if not phoneDetected or confidence < confidenceThreshold:
                 phoneMissing = True
-                lcd.setTimerRunning(False)
+                lcd.stop_timer()
                 lcd.increaseTimeBy(13) #Make up for time lost due to scheduling
                 logging.info("Phone not found; Timer Stopped")
                 print("Phone not found; Timer Stopped")
@@ -127,6 +129,7 @@ def updateOutput():
                     logging.info("Phone detected again. Restarting timer.")
                     print("Phone detected again. Restarting timer.")
                     phoneMissing = False
+                    alertFlag = True
                     lcd.start_timer() 
                     buzzerEnabled = False
                     logging.info("Buzzer Disabled")
