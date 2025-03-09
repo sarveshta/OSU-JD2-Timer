@@ -13,9 +13,10 @@ timerEnabled = False
 buzzerEnabled = False
 phoneMissing = False
 brightNess = 10
-phoneDetected = False
+phoneDetected = True
 confidence = 0
 confidenceThreshold = 0.2
+alertFlag = False
 
 
 target_dir = "/home/pi/projects/OSU-JD2-Timer/src/captured_images"
@@ -27,7 +28,7 @@ photo_lock = threading.Lock()
 logging.basicConfig(filename='/home/pi/projects/OSU-JD2-Timer/main.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
 def triggerBuzzer():
-    global buzzerEnabled, nightModeEnabled
+    global buzzerEnabled, nightModeEnabled, alertFlag
     logging.info("Buzzer trigger thread started")
     print("Buzzer trigger thread started")
     
@@ -43,11 +44,7 @@ def triggerBuzzer():
 
     try:
         while True:
-            while buzzerEnabled and not lcd.getNightMode():
-                logging.info("Buzzer is enabled and night mode is off")
-                print("Buzzer is enabled and night mode is off")
-
-            if buzzerEnabled and not lcd.getNightMode():
+            if buzzerEnabled and not lcd.getNightMode() and alertFlag:
                 for _ in range(3):
                     logging.info("Buzzer on for 1 second at 440 Hz")
                     print("Buzzer on for 1 second at 440 Hz")
@@ -58,8 +55,12 @@ def triggerBuzzer():
                     print("Buzzer off for 1 second")
                     pi.hardware_PWM(BuzzerPin, 0, 0)  # Stop PWM
                     non_blocking_sleep(1)
+                    alertFlag = False
             else:
                 pi.hardware_PWM(BuzzerPin, 0, 0)  # Ensure the buzzer is off
+
+            if not buzzerEnabled:
+                alertFlag = False
             non_blocking_sleep(0.5)  
 
     except Exception as e:
