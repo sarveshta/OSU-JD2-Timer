@@ -3,7 +3,7 @@ import lcd
 import threading
 import time
 import capturePhotos
-import RPi.GPIO as GPIO
+import pigpio
 import os
 import logging
 
@@ -30,29 +30,39 @@ def triggerBuzzer():
     logging.info("Buzzer trigger thread started")
     
     BuzzerPin = 19  # Use GPIO 19
+    pi = pigpio.pi()  # Connect to pigpio daemon
 
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(BuzzerPin, GPIO.OUT)
-    GPIO.setwarnings(False)
-
-    global Buzz
-    Buzz = GPIO.PWM(BuzzerPin, 440)
-    Buzz.start(0)
+    if not pi.connected:
+        logging.error("pigpio daemon is not running. Exiting buzzer thread.")
+        return
     
-    while True:
-        while buzzerEnabled and not lcd.getNightMode():
-            logging.info("Buzzer is enabled and night mode is off")
-        if buzzerEnabled and not lcd.getNightMode():
-            for _ in range(3):
-                logging.info("Buzzer on for 1 second at 440 Hz")
-                Buzz.ChangeDutyCycle(50)
-                non_blocking_sleep(1)
-                logging.info("Buzzer off for 1 second")
-                Buzz.ChangeDutyCycle(0)
-                non_blocking_sleep(1)
-        else:
-            Buzz.ChangeDutyCycle(0)  
-    non_blocking_sleep(0.5)  
+    pi.set_mode(BuzzerPin, pigpio.OUTPUT)
+
+    try:
+        while True:
+            while buzzerEnabled and not lcd.getNightMode():
+                logging.info("Buzzer is enabled and night mode is off")
+
+            if buzzerEnabled and not lcd.getNightMode():
+                for _ in range(3):
+                    logging.info("Buzzer on for 1 second at 440 Hz")
+                    pi.hardware_PWM(BuzzerPin, 440, 500000)  # 440Hz, 50% duty cycle
+                    non_blocking_sleep(1)
+
+                    logging.info("Buzzer off for 1 second")
+                    pi.hardware_PWM(BuzzerPin, 0, 0)  # Stop PWM
+                    non_blocking_sleep(1)
+            else:
+                pi.hardware_PWM(BuzzerPin, 0, 0)  # Ensure the buzzer is off
+            non_blocking_sleep(0.5)  
+
+    except Exception as e:
+        logging.error(f"Error in buzzer thread: {e}")
+
+    finally:
+        pi.hardware_PWM(BuzzerPin, 0, 0)  # Stop PWM before exiting
+        pi.stop()  # Disconnect from pigpio
+        logging.info("Buzzer thread stopped")
 
 def getPhoto():
     while True:
