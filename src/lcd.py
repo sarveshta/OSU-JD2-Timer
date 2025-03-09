@@ -218,14 +218,16 @@ def UI():
     
     clock()
     
-    tk.Button(frm, text="-", command=decrement_sec, font=("Times New Roman", 20)).grid(column=2, row=3, sticky=(N, S, E, W))  # arrangement of buttons and names
-    tk.Button(frm, text="+", command=increment_sec, font=("Times New Roman", 20)).grid(column=2, row=4, sticky=(N, S, E, W))
-    tk.Button(frm, text="-", command=decrement_min, font=("Times New Roman", 20)).grid(column=1, row=3, sticky=(N, S, E, W))
-    tk.Button(frm, text="+", command=increment_min, font=("Times New Roman", 20)).grid(column=1, row=4, sticky=(N, S, E, W))
-    tk.Button(frm, text="-", command=decrement_hr, font=("Times New Roman", 20)).grid(column=0, row=3, sticky=(N, S, E, W))
-    tk.Button(frm, text="+", command=increment_hr, font=("Times New Roman", 20)).grid(column=0, row=4, sticky=(N, S, E, W))
-    tk.Button(frm, text="Start Timer", command=start_timer, font=("Times New Roman", 20)).grid(column=3, row=3, sticky=(N, S, E, W))
-    tk.Button(frm, text="Stop Timer", command=stop_timer, font=("Times New Roman", 20)).grid(column=3, row=4, sticky=(N, S, E, W))
+    tk.Button(frm, text="+", command=increment_hr, font=("Times New Roman", 20)).grid(column=0, row=3, sticky=(N, S, E, W))
+    tk.Button(frm, text="+", command=increment_min, font=("Times New Roman", 20)).grid(column=1, row=3, sticky=(N, S, E, W))
+    tk.Button(frm, text="+", command=increment_sec, font=("Times New Roman", 20)).grid(column=2, row=3, sticky=(N, S, E, W))
+    
+    tk.Button(frm, text="-", command=decrement_hr, font=("Times New Roman", 20)).grid(column=0, row=4, sticky=(N, S, E, W))
+    tk.Button(frm, text="-", command=decrement_min, font=("Times New Roman", 20)).grid(column=1, row=4, sticky=(N, S, E, W))
+    tk.Button(frm, text="-", command=decrement_sec, font=("Times New Roman", 20)).grid(column=2, row=4, sticky=(N, S, E, W))
+    
+    tk.Button(frm, text="Start Timer", command=start_timer, font=("Times New Roman", 20)).grid(column=3, row=3, rowspan=2, sticky=(N, S, E, W))
+    tk.Button(frm, text="Stop Timer", command=stop_timer, font=("Times New Roman", 20)).grid(column=4, row=3, rowspan=2, sticky=(N, S, E, W))
     tk.Button(frm, text="\u2699", command=SettingsUI, font=("Times New Roman", 20)).grid(column=5, row=3, rowspan=2, sticky=(N, S, E, W))
     
     root.mainloop()  # loop window until power off
