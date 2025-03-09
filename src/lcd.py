@@ -24,6 +24,7 @@ minute_label = None
 second_label = None
 Timer_stop_count = None
 confidence_label = None
+timer_spacers = []  # new global list for spacer labels
 
 def countdown_timer():
     global time_left, timer_running
@@ -125,12 +126,16 @@ def dark_bright():
     if confidence_label:
         confidence_label.config(bg="gray26", fg="gray45")
 
-    # Update static colons and increment/decrement buttons
+    # Update static colons, increment/decrement buttons, and spacers
     for widget in timer_frame.winfo_children():
-        if isinstance(widget, tk.Label):  # This includes colons
+        if isinstance(widget, tk.Label):  # This includes colons and spacers
             widget.config(bg="gray26", fg="gray45")
         elif isinstance(widget, tk.Button):  # Includes + and - buttons
             widget.config(bg="gray18", fg="gray45")
+
+    # Update spacer labels separately to be sure:
+    for spacer in timer_spacers:
+        spacer.config(bg="gray26", fg="gray45")
 
 def medium_bright():
     global bright, timer_frame
@@ -151,12 +156,15 @@ def medium_bright():
     if confidence_label:
         confidence_label.config(bg="gray45", fg="gray80")
 
-    # Update static colons and increment/decrement buttons
+    # Update static colons, increment/decrement buttons, and spacers
     for widget in timer_frame.winfo_children():
         if isinstance(widget, tk.Label):
             widget.config(bg="gray45", fg="gray80")
         elif isinstance(widget, tk.Button):
             widget.config(bg="gray45", fg="gray80")
+
+    for spacer in timer_spacers:
+        spacer.config(bg="gray45", fg="gray80")
 
 def full_bright():
     global bright, timer_frame
@@ -177,12 +185,15 @@ def full_bright():
     if confidence_label:
         confidence_label.config(bg="white", fg="black")
 
-    # Update static colons and increment/decrement buttons
+    # Update static colons, increment/decrement buttons, and spacers
     for widget in timer_frame.winfo_children():
         if isinstance(widget, tk.Label):
             widget.config(bg="white", fg="black")
         elif isinstance(widget, tk.Button):
             widget.config(bg="white", fg="black")
+
+    for spacer in timer_spacers:
+        spacer.config(bg="white", fg="black")
 
 def night_mode():
     global bright, trigger_sound
@@ -269,7 +280,7 @@ def SettingsUI():
         .grid(row=5, column=1, columnspan=2, sticky="nsew", padx=5, pady=(15,5))
 
 def UI():
-    global root, frm, RTclk_label, hour_label, minute_label, second_label, Timer_stop_count, confidence_label, timer_frame
+    global root, frm, RTclk_label, hour_label, minute_label, second_label, Timer_stop_count, confidence_label, timer_frame, timer_spacers
     root = tk.Tk()
     root.geometry("480x320")
     root.title("Raspberry Pi Timer")
@@ -303,10 +314,14 @@ def UI():
     # Row 0: Plus buttons
     tk.Button(timer_frame, text="+", command=increment_hr, font=("Times New Roman", 28, "bold"))\
         .grid(row=0, column=0, sticky="nsew")
-    tk.Label(timer_frame, text="", font=("Times New Roman", 28)).grid(row=0, column=1)  # spacer
+    spacer = tk.Label(timer_frame, text="", font=("Times New Roman", 28))
+    spacer.grid(row=0, column=1)
+    timer_spacers.append(spacer)
     tk.Button(timer_frame, text="+", command=increment_min, font=("Times New Roman", 28, "bold"))\
         .grid(row=0, column=2, sticky="nsew")
-    tk.Label(timer_frame, text="", font=("Times New Roman", 28)).grid(row=0, column=3)  # spacer
+    spacer = tk.Label(timer_frame, text="", font=("Times New Roman", 28))
+    spacer.grid(row=0, column=3)
+    timer_spacers.append(spacer)
     tk.Button(timer_frame, text="+", command=increment_sec, font=("Times New Roman", 28, "bold"))\
         .grid(row=0, column=4, sticky="nsew")
 
@@ -323,10 +338,14 @@ def UI():
     # Row 2: Minus buttons
     tk.Button(timer_frame, text="-", command=decrement_hr, font=("Times New Roman", 28, "bold"))\
         .grid(row=2, column=0, sticky="nsew")
-    tk.Label(timer_frame, text="", font=("Times New Roman", 28)).grid(row=2, column=1)
+    spacer = tk.Label(timer_frame, text="", font=("Times New Roman", 28))
+    spacer.grid(row=2, column=1)
+    timer_spacers.append(spacer)
     tk.Button(timer_frame, text="-", command=decrement_min, font=("Times New Roman", 28, "bold"))\
         .grid(row=2, column=2, sticky="nsew")
-    tk.Label(timer_frame, text="", font=("Times New Roman", 28)).grid(row=2, column=3)
+    spacer = tk.Label(timer_frame, text="", font=("Times New Roman", 28))
+    spacer.grid(row=2, column=3)
+    timer_spacers.append(spacer)
     tk.Button(timer_frame, text="-", command=decrement_sec, font=("Times New Roman", 28, "bold"))\
         .grid(row=2, column=4, sticky="nsew")
 
